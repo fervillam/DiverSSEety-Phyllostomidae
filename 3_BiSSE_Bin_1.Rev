@@ -9,7 +9,7 @@ DATASET = "diet"
 
 # Reading the tree
 
-Phyllostomidae_Tree = eeadTrees("Phyllostomidae/MorPhyTree.tree")
+Phyllostomidae_Tree = readTrees("Phyllostomidae/MorPhyTree.tree")
 
 # Reading the Bin_3 codification matrix
 
