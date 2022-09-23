@@ -18,7 +18,7 @@ if(!require("pacman")){
 
 library(pacman)
 
-pacman::p_load(ape, castor, diversitree, dplyr, ggplot2, phangorn, phytools, 
+pacman::p_load(ape, devtools, dplyr, ggplot2, phangorn, phytools, 
                readxl, tidyr)
 
 #### Preparing the data and cleaning it ####
