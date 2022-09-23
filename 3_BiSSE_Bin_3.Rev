@@ -9,7 +9,7 @@ DATASET = "diet"
 
 # Reading the tree
 
-Phyllostomidae_Tree = eeadTrees("Phyllostomidae/MorPhyTree.tree")
+Phyllostomidae_Tree = readTrees("Phyllostomidae/MorPhyTree.tree")
 
 # Reading the Bin_3 codification matrix
 
@@ -28,7 +28,7 @@ for (i in 1:NUM_STATES) {
   
   ### Create a loguniform distributed variable for the diversification rate
   speciation[i] ~ dnLoguniform( 1E-6, 1E2)
-  speciation[i].setValue( ln(367.0/2.0) / Phylostomidae_Tree.rootAge() )
+  speciation[i].setValue( ln(367.0/2.0) / Phyllostomidae_Tree.rootAge() )
   moves.append( mvScale(speciation[i],lambda=0.20,tune=true,weight=3.0) )
   
   ### Create a loguniform distributed variable for the turnover rate
@@ -48,7 +48,7 @@ for (i in 1:NUM_STATES) {
 # Each transition rate between observed states are drawn
 # from an exponential distribution with a mean of 10
 # character state transitions over the tree.
-rate_pr := Phylostomidae_Tree.treeLength() / 10
+rate_pr := Phyllostomidae_Tree.treeLength() / 10
 for ( i in 1:(NUM_STATES*(NUM_STATES-1)) ) {
   transition_rates[i] ~ dnExp(rate_pr)
   moves.append( mvScale(transition_rates[i],lambda=0.20,tune=true,weight=3.0) )
@@ -63,12 +63,12 @@ moves.append( mvDirichletSimplex(rate_category_prior,tune=true,weight=2) )
 
 
 ### Create the fix parameter for the age of the root set to the observed age
-root <- Phylostomidae_Tree.rootAge()
+root <- Phyllostomidae_Tree.rootAge()
 
 
 ### rho is the probability of sampling species at the present
 ### fix this to 112/Total of Phyllostomidae species
-rho <- Phylostomidae_Tree.ntips()/150
+rho <- Phyllostomidae_Tree.ntips()/150
 
 
 #### construct a variable for the tree drawn from a birth death process
@@ -82,7 +82,7 @@ timetree ~ dnCDBDP( rootAge           = root,
                     condition         = "time")
 
 ### clamp the model with the "observed" tree
-timetree.clamp( Phylostomidae_Tree )
+timetree.clamp( Phyllostomidae_Tree )
 timetree.clampCharData( Bin_3_data )
 
 
@@ -120,7 +120,7 @@ mymcmc.run(generations=10000, tuningInterval=200)
 
 
 anc_states = readAncestralStateTrace(Documents/Phyllostomidae-Anc-Reconstruction/Bin_3_anc_states.log")
-anc_tree = ancestralStateTree(tree=Phylostomidae_Tree,
+anc_tree = ancestralStateTree(tree=Phyllostomidae_Tree,
                               ancestral_state_trace_vector=anc_states,
                               include_start_states=false,
                               file=Documents/Phyllostomidae-Anc-Reconstruction/Bin_3_anc_states_results.tree",
@@ -130,7 +130,7 @@ anc_tree = ancestralStateTree(tree=Phylostomidae_Tree,
 
 
 anc_state_trace = readAncestralStateTrace(Documents/Phyllostomidae-Anc-Reconstruction/Bin_3_stoch_map.log")
-characterMapTree(Phylostomidae_Tree,
+characterMapTree(Phyllostomidae_Tree,
                  anc_state_trace,
                  character_file=Documents/Phyllostomidae-Anc-Reconstruction/Bin_3_stoch_map_character.tree",
                  posterior_file=Documents/Phyllostomidae-Anc-Reconstruction/Bin_3_stoch_map_posterior.tree",
